@@ -6,6 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     container: fedora:40
     steps:
+      - name: Install dependencies
+        run: |
+          dnf -y install rpm-build dnf-utils wget procps-ng
+          dnf -y builddep SPECS/kernel.spec
+
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -16,11 +21,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          dnf -y install rpm-build dnf-utils wget
-          dnf -y builddep SPECS/kernel.spec
 
       - name: Download Kernel Tarball
         run: |
