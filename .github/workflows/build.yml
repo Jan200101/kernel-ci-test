@@ -4,15 +4,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: fedora:40
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          dnf -y install rpm-build dnf-utils wget procps-ng
-          dnf -y builddep SPECS/kernel.spec
 
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
@@ -22,6 +14,9 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
 
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Download Kernel Tarball
         run: |
           TARBALL=$(rpmspec --parse SPECS/kernel.spec | grep Source0 | cut -b 10-)
@@ -29,4 +24,4 @@ jobs:
 
       - name: Build Kernel
         run: |
-          ./TOOLS/build.sh -ba SPECS/kernel.spec
+          ./TOOLS/podman-build.sh
